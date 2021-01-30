@@ -1,9 +1,9 @@
 import tables, hashes
 
 import godotcoretypes
-import internal/godotinternaltypes, internal/godotvariants,
-       internal/godotstrings, internal/godotdictionaries,
-       internal/godotarrays
+import internal/godotinternaltypes, internal/godotvarianttypes,
+       internal/godotvariants, internal/godotstrings,
+       internal/godotdictionaries, internal/godotarrays
 
 type
   #Variant* = ref object
@@ -305,7 +305,7 @@ proc hash*(self: Variant): Hash =
   of VariantType.Color: self.asColor().hash()
   of VariantType.NodePath: self.asNodePath().hash()
   of VariantType.RID: self.asRID().hash()
-  of VariantType.Object: self.asGodotObject().objectHash()
+  of VariantType.VObject: self.asGodotObject().objectHash()
   of VariantType.Dictionary: hash(self.godotVariant.asGodotDictionary().godotHash())
   of VariantType.Array: hash(self.godotVariant.asGodotArray().godotHash())
   of VariantType.PoolByteArray: self.asPoolByteArray().hash()

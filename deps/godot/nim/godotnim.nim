@@ -408,7 +408,7 @@ proc newOwnObj[T: NimGodotObject](name: cstring): T =
   var ret = newMethod.call(newNativeScript, nil, 0, err)
   if err.error != VariantCallErrorType.OK:
     printError("Failed to invoke 'new' on NativeScript for " & $name)
-  elif ret.getType() != VariantType.Object:
+  elif ret.getType() != VariantType.VObject:
     printError("Expected that NativeScript::new returns Object, " &
                "but it returned: " & $ret.getType())
   else:
@@ -497,7 +497,7 @@ proc godotObject*(nimObj: NimGodotObject): ptr GodotObject {.inline.} =
 
 proc godotTypeInfo*(T: typedesc[NimGodotObject]): GodotTypeInfo {.inline.} =
   GodotTypeInfo(
-    variantType: VariantType.Object,
+    variantType: VariantType.VObject,
     hint: when isResource(T): GodotPropertyHint.ResourceType
           else: GodotPropertyHint.None,
     hintStr: toGodotName(T)
@@ -511,7 +511,7 @@ proc toVariant*(self: NimGodotObject): Variant {.inline.} =
 
 proc fromVariant*[T: NimGodotObject](self: var T,
                                      val: Variant): ConversionResult =
-  if val.getType() == VariantType.Object:
+  if val.getType() == VariantType.VObject:
     let objPtr = val.asGodotObject()
     self = asNimGodotObject[T](objPtr)
     if self.isNil:
@@ -564,7 +564,7 @@ proc godotTypeInfo*(T: typedesc[SomeGodotOrNum]): GodotTypeInfo {.inline.} =
     elif T is RID:
       VariantType.RID
     elif T is ptr GodotObject:
-      VariantType.Object
+      VariantType.VObject
     elif T is NodePath:
       VariantType.NodePath
     elif T is Dictionary:
